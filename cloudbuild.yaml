@@ -1,0 +1,30 @@
+steps:
+  # 1. Construir la imagen de Docker
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_IMAGE_NAME}:$SHORT_SHA'
+      - '.'
+
+  # 2. Subir la imagen a Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_IMAGE_NAME}:$SHORT_SHA'
+
+  # 3. Desplegar la imagen en Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_IMAGE_NAME}' # Nombre del servicio en Cloud Run
+      - '--image=${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_IMAGE_NAME}:$SHORT_SHA'
+      - '--region=${_AR_REGION}'
+      - '--platform=managed'
+      - '--allow-unauthenticated' # Permite el acceso público al servicio
+
+# Lista de imágenes que se crearán. Cloud Build las subirá a Artifact Registry.
+images:
+  - '${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_IMAGE_NAME}:$SHORT_SHA'
