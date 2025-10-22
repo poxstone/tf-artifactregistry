@@ -9,4 +9,6 @@ module "cloud_run_module_01" {
   bucket_source   = "bluetab-colombia-data-qa-tmp"
 }
 
-
+output "salida" {
+  value = module.cloud_run_module_01
+}
