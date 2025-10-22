@@ -1,13 +1,33 @@
 steps:
-  # 1. Construir la imagen de Docker
+  # 1. Descargar el archivo .zip desde GCS
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args:
+      - 'cp'
+      - 'gs://${_BUCKET_SOURCE}/${_ZIP_OBJECT}'
+      - '.'
+
+  # 2. Descomprimir el archivo .zip
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - "apt-get update && apt-get install -y unzip && unzip -o '${_ZIP_OBJECT}'; rm '${_ZIP_OBJECT}'"
+
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - "ls *; pwd"
+
+  # 3. Construir la imagen de Docker
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
       - '-t'
       - '${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_IMAGE_NAME}:$SHORT_SHA'
-      - 'src/artifact_registry/app'
+      - '.'
 
-  # 2. Subir la imagen a Artifact Registry
+  # 4. Subir la imagen a Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
