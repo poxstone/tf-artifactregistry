@@ -2,7 +2,7 @@
 variable "project_id" {
   description = "El ID del proyecto de GCP"
   type        = string
-  default = "bluetab-colombia-data-qa"
+  default = "project"
 }
 
 # La región de GCP
