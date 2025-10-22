@@ -5,7 +5,7 @@ steps:
       - 'build'
       - '-t'
       - '${_AR_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPOSITORY_NAME}/${_IMAGE_NAME}:$SHORT_SHA'
-      - '.'
+      - 'src/artifact_registry/app'
 
   # 2. Subir la imagen a Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'

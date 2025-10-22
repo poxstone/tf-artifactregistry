@@ -25,14 +25,18 @@ variable "region" {
   default     = "us-central"
 }
 
-variable "version" {
+variable "source_path" {
   type        = string
-  description = "version para la imagen"
-  default     = null
+  description = "example: /src/cloud-functions/cf-bq-copy-sync/"
 }
 
 variable "service_account_name" {
   type        = string
   description = "Service Account for run query"
   default     = null
+}
+
+variable "bucket_source" {
+  type        = string
+  description = "Bucket para cloud functions"
 }
